@@ -1,0 +1,68 @@
+#######
+To Run
+#######
+forever start app.js
+forever stop app.js
+
+###########
+Development
+###########
+
+apt install npm
+npm install mongodb
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+
+start mongoDB:
+sudo systemctl start mongod
+
+status mongodb
+sudo systemctl status mongod
+
+enable mongoDB when system starts
+sudo systemctl enable mongod
+
+mongo
+create
+> use EmployeeDB
+
+db.users.insert({"time_created": "2018-03-30 00:51:45", "is_verified" : true, "verify_code" : "", "first_name" : "Azeem", "last_name" : "Ghumman", "username" : "Ghumman", "password" : "13829130aa3a12ch0fdacf7c1466wa9c", "email" : "xyz@gmail.com"})
+db.assets.insert({"asset_id" : "1", "serial_number" : "542", "fwo_number" : "12345", "secret_key" : "c5d91b44-2fe5-4599-9854-13ca06fe6c73", "market_value" : "50000", "engine_number" : "XYZ123", "name" : "Drilling Rig", "model" : "SR-60", "origin" : "Italy", "chassis" : 4213, "make" : "Soilmec", "capacity" : "1500mm", "year" : 2013, "notes" : "some notes about this equipment"})
+db.logs.insert({"asset_id" : "1", "timestamp" : 1533102583, "data" : {"acc_x" : 10, "acc_y" : 15, "acc_z" : 20}, "events" : ["started", "charging"]})
+db.logs.insert({"asset_id" : "1", "timestamp" : 1533102584, "data" : {"acc_x" : 11, "acc_y" : 14, "acc_z" : 18}, "events" : ["charging"]})
+db.logs.insert({"asset_id" : "1", "timestamp" : 1533102586, "data" : {"acc_x" : 12, "acc_y" : 13, "acc_z" : 17}, "events" : ["stopped"]})
+
+Database:
+
+Tables:
+users table
+logs table
+assets table
+
+users
+time_created, is_verified, verify_code, first_name, last_name, username, password, email, etc.
+
+assets
+asset_id, serial_number, fwo_number, name, year, make, model, capacity, origin, etc.
+..more fields available in another view
+
+logs
+timestamp, asset_id?, {data}, {events}
+data and events and more? will depend on the type of device, etc, freeform
+Q: how do the devices know their asset_id?
+maybe the devices send out a uuid and we map that to the asset in a separate collection
+
+
+npm init
+.. set project settings
+npm install express --save
+npm install mongodb --save
+npm install body-parser --save
+
+the asset makes a POST request with 2 fields:
+secret_key: uuid assigned to the asset
+data: {json with following fields}: timestamp, data{}, events[]
+{"timestamp" : 1533102586, "data" : {"acc_x" : 12, "acc_y" : 13, "acc_z" : 17}, "events" : ["charging, stopped"]})
